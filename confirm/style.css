@@ -1,0 +1,41 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: style.css
+*/   
+/*===============================================*/
+
+#confirm_box{
+  width: 400px;
+  position: absolute;
+  top:50%;
+  margin-top: -150px;
+  left: 50%;
+  margin-left: -193px;
+}
+
+#logo{
+  text-align:center;
+}
+
+#message{
+  padding: 20px 0 20px 0;
+}
+
+#close_window{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-right: 1px solid #EAEAEA;
+    color: #222222;
+    height: 34px;
+    text-align: center;
+    width: 112px;
+    margin:auto;
+    margin-top:8px;
+}
+
+#close_window p{
+  padding-top:10px;
+}

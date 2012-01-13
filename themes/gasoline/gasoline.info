@@ -1,0 +1,18 @@
+; $Id: remote.info,v 1.0 2011/04/27 23:27:32 goba Exp $
+name = Gasoline
+description = Theme made by bcadsgn.com for remote aka Sam + Christian Cirrione and gasoline crew
+version = VERSION
+core = 6.x
+engine = phptemplate
+stylesheets[all][] = reset.css
+stylesheets[all][] = wrap.css
+
+; Information added by drupal.org packaging script on 2010-12-15
+version = "6.20"
+project = "drupal"
+datestamp = "1292447788"
+
+; regions page
+; regions[gasoline] = gasoline   delete comment to use this string
+
+

@@ -1,0 +1,66 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: header.css
+     
+*/   
+/*===============================================*/
+
+/*--HEADER---------------------------------------*/
+
+/*--LOGO-----------------------------------------*/
+
+#logo{
+  float:left;
+  width: 250px;
+  height: 44px;
+  background: #fff;
+  margin-top: -410px;
+}
+
+#logo img{
+  float: right;
+  margin:6px 12px;
+}
+
+
+/*--MENU-----------------------------------------*/
+
+#menu{
+  float: right;
+  margin-top:-405px;
+  cursor:default;
+}
+
+#menu li{
+  cursor:pointer;
+  text-align: center;
+  color: #222;
+  background: #fff;
+  width: 112px;
+  height:34px;
+  border-right: 1px solid #eaeaea;
+}
+
+#menu li div{
+  margin-top:9px;
+}
+
+#menu li:hover{
+  text-align: center;
+  color: #fff;
+  background: #222;
+  width: 112px;
+  height:34px;
+  border-right: 1px solid #222;
+}
+
+/*--GASOLINE--------------------------------------*/
+
+#gasoline{
+  float: right;
+  margin-top: -75px;
+}

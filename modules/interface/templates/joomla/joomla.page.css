@@ -1,0 +1,111 @@
+BODY {
+  background-color:#FFFFFF !important;
+  color:#333333 !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:12px;
+  margin:0;
+}
+a {
+  color:#C64934;
+  text-decoration:none;
+}
+a:link, a:visited  {
+  color: #C64934 !important;
+  text-decoration: none !important;
+}
+#wrapper {
+  border:0 none;
+  margin:0 auto;
+  padding:0;
+}
+#header {
+  background:transparent url(images/header.background.jpg) repeat scroll 0 0;
+  border-bottom:4px solid #C64934;
+  margin:0px;
+  padding:0px;
+}
+#joomla {
+  background:transparent url(images/logo.jpg) no-repeat scroll left top;
+  margin:0px;
+  padding:0px;
+  position:relative;
+  width:100%;
+  line-height:100% !important;
+}
+#menubar {
+  width:100%;
+  height: 24px;
+  background-color: #F1F3F5;
+  border-bottom: 1px solid #CCCCCC;
+}
+#menubar_lower {
+  width:100%;
+  background-color: #F1F3F5;
+  border-bottom: 1px solid #CCCCCC;
+  height: 58px;
+}
+.pathway {
+  font-size:11px;
+  color:#C64934;
+  text-decoration:none;
+  margin-left: 18px;
+  padding-top: 18px;
+  float: left;
+}
+.pathway .breadcrumb:first-child {
+  font-weight: bold;
+}
+.pathway A {
+  color:#C64934;
+}
+.menudottedline {
+  float: right;
+}
+.centermain {
+  padding:0 10px;
+  margin-top: 13px;
+}
+.main {
+  padding:0;
+  width:99%;
+  text-align: left;
+}
+.adminheading {
+  background-color: #FFFFFF;
+  color: #C64934;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+  text-align: left;
+  width: 100%;
+  background: transparent url(images/addedit.png) no-repeat scroll left center;
+  height: 50px;
+  padding-left: 50px;
+  text-align: left;
+  border-bottom: 2px solid #FFFFFF;
+  width: 99%;
+}
+.adminheading H2 {
+  font-size:18px;
+  font-weight:bold;
+  padding-top: 15px;
+}
+.links.primary-links {
+  float: none;
+  font-size: 11px;
+  padding-left: 3px;
+}
+UL.links.primary-links LI {
+  padding: 6px 0px 0px 0px;
+  margin-right: 5px;
+}
+UL.links.primary-links LI A {
+  line-height: 100%;
+  background-image: none !important;
+  padding: 0px !important;
+  margin: 0px 0px 0px 7px !important;
+  color: Black !important;
+}
+
+

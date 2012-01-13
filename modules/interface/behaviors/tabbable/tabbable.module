@@ -1,0 +1,134 @@
+<?php
+// $Id: tabbable.module,v 1.1 2009/09/15 03:38:45 techsoldaten Exp $
+/**
+ * tabbable.module
+ *
+ * Allows users to create custom tab sets within interfaces.
+ *
+ */
+/**
+ * Implementation of hook_help
+ */
+function tabbable_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#tabbable':
+      $output = '<p>'. t('The tabbable module provides tab support within interfaces.') .'</p>';
+      return $output;
+  }
+}
+
+/**
+ * Pulls the behaviors defined for a forum and prepopulates a form array with them. Used to provide a form
+ * structure for rendering forms.
+ *
+ * @param array $newform: array used for holding the structure of the form that will be rendered
+ * @param string $behaviors: array of all the behaviours that will be applied
+ */
+function tabbable_interface_load_behavior(&$newform, $template, $interface_context) {
+
+  // make sure we have the actions for tab switching
+  drupal_add_js(drupal_get_path('module', 'tabbable').'/tabbable_actions.js', 'module');
+
+  // make sure we have the css for tabs
+  drupal_add_css( drupal_get_path('module', 'tabbable') . '/tabbable.css');
+
+  // makes sure we assign the right class to the first tab
+  $active = ' active';
+
+  // check to see if there are any tab regions associated with the current form
+  // TODO: make sure the sort order works
+  $check = db_query("SELECT * FROM {tabbable_region_data} WHERE content_type = '%s' AND interface_context = '%s' AND template = '%s' ORDER BY region, name ASC", $newform['#type'], $interface_context, $template);
+
+  // this is a placeholder for the name of the region. we use it when looping around things...
+  $region = '';
+
+  // loop around any results and put them into newform
+  while ($row = db_fetch_array($check)){
+
+    if($region != $row['region']){
+
+      // reset active for each new tab region
+      $active = ' active';
+
+      // create the region. PARENT is the name of the template region. REGION is the name of the tab region.
+      // I know, it is confusing, so is most of this.
+      // TODO: make this less confusing.
+      $region_prefix = '<div class="tabbable ui-draggable" id="' . $row['region'] .'" style="position: relative; left: 0pt; top: 0pt;">';
+      $region_suffix = '</div>';
+
+      $newform[$row['parent']][$row['region']] = array(
+        '#type' => 'markup',
+        '#prefix' => $region_prefix,
+        '#suffix' => $region_suffix,
+        '#weight' => $row['sort_order'],
+      );
+
+      // there will be a TAB HOLDER and a TAB CONTENT holder in each tab. create these here, they all look the same.
+      $newform[$row['parent']][$row['region']]['tab_holder'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="tabbable_tabset">',
+        '#suffix' => '</div>',
+        '#weight' => -10,
+      );
+
+      $newform[$row['parent']][$row['region']]['tab_content'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="tabbable_content">',
+        '#suffix' => '</div>',
+        '#weight' => 0,
+      );
+
+      $region = $row['region'];
+    }
+
+    // create the tab.
+    $newform[$row['parent']][$row['region']]['tab_holder'][$row['name']] = array(
+      '#type' => 'markup',
+      '#value' => '<div class="tabbable_tab' . $active . '">' .
+        l($row['text'], '#', array('attributes' => array('class' => 'tabbable_link', 'name' => $row['name']))) .
+        '</div>',
+      '#weight' => $row['sort_order'],
+    );
+
+    // create the tab content holder. this will be populated with form elements later in the form generation process.
+    $newform[$row['parent']][$row['region']]['tab_content'][$row['name']] = array(
+      '#type' => 'markup',
+      '#prefix' => '<div name="' . $row['name'] . '" class="tabbable_item' . $active . '">',
+      '#suffix' => '</div>',
+    );
+
+    $active = '';
+
+  }
+
+}
+
+function tabbable_interface_save_behavior($data, $type, $template, $interface_context){
+
+  // clean out any data already stored for this interface
+  db_query("DELETE FROM {tabbable_region_data} WHERE content_type = '%s' AND template = '%s' AND interface_context = '%s'", $type, $template, $interface_context);
+
+  // loop through all regions and save them in the database
+  foreach ($data['regions'] as $row){
+    // we are storing regions in a funny way, using the content type, the template and the context to retrieve them
+    // getting information
+    foreach ($row['element'] as $key => $elem){
+
+      db_query(
+        "INSERT INTO {tabbable_region_data} (template, content_type, interface_context, parent, region, name, text, sort_order) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+        $template, $type, $interface_context, $row['parent_region'], $row['id'],
+        $elem['name'],
+        $elem['text'],
+        $key
+      );
+
+      }
+  }
+}
+
+function tabbable_interface_delete_behavior($type, $template, $interface_context){
+
+  // clean out any data already stored for this interface
+  db_query("DELETE FROM {tabbable_region_data} WHERE content_type = '%s' AND template = '%s' AND interface_context = '%s'", $type, $template, $interface_context);
+
+}

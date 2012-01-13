@@ -1,0 +1,37 @@
+; $Id: joomla.info,v 1.1 2009/09/15 03:38:45 techsoldaten Exp $
+name = Joomla - Original
+description = Old-school Joomla interface
+template = joomla.tpl.php
+directory = joomla
+
+; all css files needed for the display will be loaded through an array
+css[] = joomla.css
+css[] = joomla.page.css
+
+; all regions will be defined here, with a key corresponding to an rid in the code
+regions[joomla_left_top_left] = Left, Top Left
+regions[joomla_left_top_right] =  Left, Top Right
+regions[joomla_left_bottom] = Left Center Column
+regions[joomla_left_bottom_under] = Beneath Left Center Column
+regions[joomla_right_container] = Right Container
+regions[joomla_top_container] = Top Right Container
+
+; create a default region where all form elements will be placed. if there is not a region defined, 
+; the first element will be used.
+default_region = joomla_left_bottom
+
+; all behaviors can be loaded through this interface
+behaviors[common_groupers][name] = common_groupers
+behaviors[common_groupers][path] = /behaviors/common_groupers/common_groupers
+
+; a template for preprocessing can be defined here
+; this needs to be in the themes directory to work reliably on all versions of d6
+page_template = joomla.page
+
+
+; Information added by drupal.org packaging script on 2009-09-15
+version = "6.x-1.0"
+core = "6.x"
+project = "interface"
+datestamp = "1252987533"
+

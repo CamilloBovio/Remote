@@ -1,0 +1,182 @@
+/* $Id: interface.css,v 1.1 2009/09/15 03:34:56 techsoldaten Exp $ */
+#interface_controls {
+  bottom: 0px;
+  left: 0px;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  position: fixed;  
+  z-index: 5001;
+  width: 100%;
+  background: #EDF5FA;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+/* status bar styles */
+#interface_controls #interface_handle {
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  height: 8px;
+  width: 100%;
+  border-top: 1px solid #555555;
+  border-bottom: 1px solid #333333;
+  background: #EEEEEE url(images/handle.jpg) center -1px no-repeat;
+}
+#interface_controls #interface_status_bar {
+  position: relative;  
+  height: 20px;
+  padding: 0px 0px 0px 3px;
+  color: White;
+  background: #777777;
+  background: #227DBF;
+  width: 100%;
+  font-size: 12px;
+  overflow: hidden;
+  border-bottom: 1px solid #00426F;
+}
+#interface_controls #interface_status_bar #interface_default_button {
+  display: none;
+  margin-left: 8px;
+}
+#interface_controls #interface_status_bar #interface_selected {
+  display: inline;
+  margin-left: 8px;
+}
+/* end status bar styles */
+/* context form */
+#interface_controls .interface_form_elems {
+  display: none;
+}
+
+#interface_controls #interface_settings_screen {
+  display: none;
+}
+#interface_controls #interface_context_form {
+}
+#interface_controls #interface_context_form FORM {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+#interface_controls #interface_context_form FORM .form-submit {
+  margin: 8px 5px 0px 0px;
+}
+#interface_controls #interface_context_form .interface_admin_left_panel {
+  border-right:1px solid White;
+  float:left;
+  margin-bottom:5px;
+  padding:5px;
+  width:49%;
+}
+#interface_controls #interface_context_form .interface_admin_right_panel {
+  margin-bottom: 5px;
+  width: 49%;
+  float:left;
+  margin-bottom:5px;
+  padding:5px;
+  width:49%;
+}
+#interface_controls #interface_context_form .interface_admin_right_panel .form-item {
+  margin: 0px;
+}
+/* END context form */
+
+
+#interface_controls #interface_element_form, 
+#interface_controls #interface_region_form {
+  display: none;
+  margin: 5px;
+}
+#interface_controls #interface_element_form span.el_label {
+  display: block;
+  float: left;
+  text-align: right;
+  width: 80px;
+  font-weight: bold;
+} 
+#interface_controls #interface_element_form SPAN.el_data {
+  margin-left: 85px;
+  display: block;
+} 
+#interface_controls #interface_element_form .el_attr {
+  clear: both;
+  border-bottom: 1px solid #AAAAAA;
+  margin-bottom: 3px;
+} 
+#ief_left_panel {
+  padding: 5px;
+  width: 49%;
+  border-right: 1px solid White;
+  margin-bottom: 5px;
+  float: left;
+}
+#ief_right_panel {
+  padding: 5px;
+  margin-bottom: 5px;
+  width: 49%;
+  float: left;
+}
+#ief_right_panel .interface_element_actions {
+  margin: 3px;
+}
+/** 
+ * 
+ */
+.interface-region-active {
+  border: 1px dashed #CCCCCC;
+}
+.interface-region-droppable {
+  border: 1px dashed #CCCCCC;
+}
+.interface-region-hover {
+  border: 1px dashed #CCCCCC;
+}
+.interface-element-active {
+  border: 1px dashed #CCCCCC;
+}
+.interface-element-over {
+  border: 1px dashed #CCCCCC;
+}
+.interface-element-dragging {
+  border: 1px dashed #CCCCCC;
+  z-index: 5000;
+}
+
+.form-button-holder {
+  display: inline;
+  padding: 10px;
+  margin: 15px 0;
+}
+.form-button-holder .form-submit {
+  margin: 0;
+}
+.form-button-holder.over {
+  padding: 5px;
+  border: 1px solid #DDDDDD;
+  margin: 5px;
+}
+.form-button-holder INPUT {
+  width: auto;
+}
+.form-item.over {
+  background-color: #DDDDDD;
+}
+.form-button-holder.over {
+  background-color: #DDDDDD;
+}
+
+.drag_active {
+  border: 2px dashed #AADD33;
+}
+.drop-active {
+  border: 1px solid #DDDDDD;
+}
+.drop-hover {
+  border: 1px solid Red;
+}
+#drop-marker {
+  border: 2px dashed #DD33AA;
+  height: 10px;
+}

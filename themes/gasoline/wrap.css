@@ -1,0 +1,139 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: wrap.css
+     
+*/   
+/*===============================================*/
+
+
+/*--WRAP-----------------------------------------*/
+
+#wrap{
+  width: 520px;
+  height: 100%;
+  margin:auto;
+  background: #fff;
+} 
+
+/*--CONTACT & BOOKING----------------------------*/
+
+#contact_booking{
+  height: 480px;
+}
+
+#links_block{
+  float: left;
+  width: 379px;
+  margin-right: 20px;
+}
+
+.all_links{
+  padding-bottom: 23px;
+  width:379px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.all_links h1{
+  margin-bottom:9px;
+}
+
+#artist_links{
+}
+
+#sam_links{
+  padding-top:10px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+#christian_links{
+    padding-top:10px;
+}
+
+#contact_block{
+  float:right;
+  width: 380px;
+}
+
+#edit-submitted-message, .form-textarea required {
+  min-width: 505px;
+  max-width: 505px;
+  min-height: 150px;
+  max-height: 250px;
+  border: 1px solid #fff;
+  background: #eaeaea;
+  font-family: Arial;
+  font-size: 13px;
+  color: #666;
+  padding: 5px 5px 0 5px;
+  margin-top: -5px;
+}
+
+#edit-submitted-email, .form-text required email,
+#edit-submitted-name, .form-text required, 
+#edit-submitted-surname, .form-text required {
+  width: 230px;
+  height: 23px;
+  border: 1px solid #fff;
+  background: #eaeaea;
+  font-family: Arial;
+  padding: 0 5px 0 5px;
+  color: #666;
+  margin-top:-5px;
+}
+
+#edit-submit, .form-submit{
+  cursor: pointer;
+  margin-right:5px;
+  border: 1px solid #eaeaea;
+  font-family: Arial;
+  font-size:18px;
+  color: #666;
+  margin-top: 20px;
+  margin-left:0px;
+}
+
+#edit-upload-your-demo-wrapper{
+  margin-top: 30px;
+}
+
+#edit-upload-your-demo-wrapper{
+  font-family: Arial;
+  color: #666;
+}
+
+#edit-upload-your-demo {
+  border: 1px solid #fff;
+  background: #eaeaea;
+  font-family: Arial;
+  font-size: 13px;
+}
+
+#edit-upload-your-demo{
+  cursor: pointer;
+}
+
+
+.form-required{
+  color: #666;
+}
+
+
+#node-20 .submitted, #contact_block .views-label-webform-form-body, #contact_block .submitted, #contact_block #node-20 a {
+  display:none;
+}
+
+
+
+#avvertenze {
+  padding: 30px 0 30px 0;
+}
+
+#avvertenze p{
+  color: #888;
+  font-size: 11px;
+}

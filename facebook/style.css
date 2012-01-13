@@ -1,0 +1,41 @@
+/*===============================================*/
+/*   
+     Name: Gasoline_FB artist page
+     Date: 8/6/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: style.css
+*/   
+/*===============================================*/
+
+#wrap{
+  background: url('bg.jpg') no-repeat;
+  width: 520px;
+  height: 636px;
+}
+
+#all_links{
+  position: absolute;
+  margin-top: 460px;
+}
+
+#links{
+  position: relative;
+  margin-left: 25px;
+}
+
+#sfondo{
+  margin-left: -280px;
+  position: absolute;
+  background: #fff;
+  width: 520px;
+  height: 44px;  
+}
+
+.link {
+  float: left;
+  margin-top: 6px;
+  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+}

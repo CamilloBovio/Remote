@@ -1,0 +1,7 @@
+// $Id: CHANGELOG.txt,v 1.1 2009/09/15 03:34:56 techsoldaten Exp $
+
+Interface 6.x-1.0, 2009-07-30
+------------------------------
+  * First public release.
+
+

@@ -1,0 +1,79 @@
+<?php
+// $Id: tabbable.install,v 1.1 2009/09/15 03:38:45 techsoldaten Exp $
+
+/**
+ * @file
+ * Installation routines.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function tabbable_schema() {
+  $schema['tabbable_region_data'] = array(
+    'description' => t('Stores data about tabs in an interface.'),
+    'fields' => array(
+      'template' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => 0,
+      ),
+      'content_type' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'behaviour' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'parent' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'region' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'text' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'interface_context' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'sort_order' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => 0,
+      )
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function tabbable_install() {
+  drupal_install_schema('tabbable');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function tabbable_uninstall() {
+  drupal_uninstall_schema('tabbable');
+}

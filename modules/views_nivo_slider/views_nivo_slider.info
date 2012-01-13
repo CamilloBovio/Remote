@@ -1,0 +1,16 @@
+; $Id: views_nivo_slider.info,v 1.1.2.2 2010/04/20 14:44:18 pedrofaria Exp $
+name = Views Nivo Slider
+description = Display a view with Nivo Slider
+core = 6.x
+package = Views
+dependencies[]  = views
+dependencies[]  = jquery_update
+dependencies[]  = imagecache
+
+
+; Information added by drupal.org packaging script on 2010-06-29
+version = "6.x-2.0"
+core = "6.x"
+project = "views_nivo_slider"
+datestamp = "1277815822"
+

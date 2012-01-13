@@ -1,0 +1,13 @@
+; $Id: tabbable.info,v 1.1 2009/09/15 03:38:45 techsoldaten Exp $
+name = Tabbable
+description = Allows users to create dynamic tab sets within interface.
+package = Interface
+core = 6.x
+
+
+; Information added by drupal.org packaging script on 2009-09-15
+version = "6.x-1.0"
+core = "6.x"
+project = "interface"
+datestamp = "1252987533"
+

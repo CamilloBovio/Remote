@@ -1,0 +1,65 @@
+<?php
+// $Id: interface.install,v 1.1 2009/09/15 03:34:56 techsoldaten Exp $
+
+/**
+ * @file
+ * Installation routines.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function interface_schema() {
+  $schema['interface_template'] = array(
+    'description' => t('Stores interface template information.'),
+    'fields' => array(
+      'template' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => 0,
+      ),
+      'content_type' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'src' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'placement' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'interface_context' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'element_order' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => 0,
+      )
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function interface_install() {
+  drupal_install_schema('interface');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function interface_uninstall() {
+  drupal_uninstall_schema('interface');
+}
+

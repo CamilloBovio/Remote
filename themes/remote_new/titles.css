@@ -1,0 +1,41 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: titles.css
+     
+*/   
+/*===============================================*/
+
+/*--TITLES---------------------------------------*/
+
+#title_featured{
+  background: url(img/tit/featured.png) no-repeat;
+}
+
+#title_news{
+  background: url(img/tit/news.png) no-repeat;
+}
+
+#title_music{
+  background: url(img/tit/music.png) no-repeat;
+}
+
+#title_biography{
+  background: url(img/tit/biography.png) no-repeat;
+}
+
+#title_gallery{
+  background: url(img/tit/gallery.png) no-repeat;
+}
+
+#title_contact{
+  background: url(img/tit/contact.png) no-repeat;
+}
+
+#title_gasoline{
+  background: url(img/tit/gasoline.png) no-repeat;
+}
+

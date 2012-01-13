@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Dynamic XML Music MP3 Player:</title>
+<style>
+	body{
+		background-color:#151515;
+		padding:0;
+		margin:0;
+	}
+	ul{
+		
+	}
+	li{
+		font-size:14px;
+		line-height:20px;
+	}
+	#container{
+		background-color:#CCC;
+		width:900px;
+		margin:auto;
+		padding:20px;
+	}
+	h1{
+		color:#00ccff;
+		background:#000;
+		padding:10px;
+	}
+	h2{
+		color:#00ccff;
+		background:#000;
+		padding:10px;
+	}
+	h3{
+		color:#00ccff;
+		background:#000;
+		padding:10px;
+	}
+	.sectionTitle{
+		color:#00ccff;
+		background:#000;
+		padding:10px;
+		margin-left:-40px;
+	}
+	.note{
+		color:#00ccff;
+		background:#000;
+		padding:10px;
+		margin-top:10px;
+	}
+	.noteBody{
+		display:inline;
+		color:#ffffff;
+	}
+</style>
+</head>
+<body>
+	<div id="container">
+    	<div align="center"><h2>Help File for Dynamic Xml Music MP3 Player</h2></div>
+        <ul>
+            <li><h3 class="sectionTitle">How to Take this Component Inside Another FLA File?</h3>
+                <ol>
+                    <li>Open your destination (your own) .fla file</li>
+                    <li>Click File Menu -> Choose Import -> Import External Library... (or use Ctrl+Shift+O)</li>
+                    <li>Browse to the folder where you have unzipped the <strong>Dynamic XML Music MP3 Player</strong></li>
+                    <li>Choose <strong>DynamicMP3Player.fla</strong> and click Open</li>
+                    <li>Library panel of the <strong>DynamicMP3Player.fla</strong> will open in the Flash IDE with all the assets inside the <strong>MP3_Player_Assets</strong> folder.</li>
+                    <li><strong>Drad MP3_Player_Assets</strong> folder inside your destination .fla file's library panel.</li>
+                    <li>To Use it just drag the <strong>LucidMusicPlayer</strong> movieclip from the library panel to the stage.</li>
+                    <li>Now also copy the net, com and other related folders of the <strong>Dynamic XML Music MP3 Player</strong> to the folder in which your .fla file exists in which you just copied the assets from <strong>DynamicMP3Player.fla</strong> file.</li>
+                    <li>Test and it should work.</li>
+                </ol>
+            </li>
+        </ul>
+        <hr width="100%" size="1" />
+        <ul>
+            <li><h3 class="sectionTitle">How to Add/Remove Music Tracks?</h3>Open the musicPlaylist.xml file and follow the instructions in the image given below:<br /><br /><img border="1" src="xml_file_structure.jpg" width="727" height="501" /></li>
+        </ul>
+        <hr width="100%" size="1" />
+        <ul>
+            <li><h3 class="sectionTitle">Configuration Parameters:</h3>
+            You set 4 settings of the mp3 player using the flashvars in the html embed code. Please see the source code of <strong>DynamicMP3Player_With_FlashVars.html</strong> for the usage of flashvars method and how to set the parameters using flashvars method. If you don't set the configuration parameters through flashvars then default values in the actionscript will be used. You can also modify the default values in the actionscript code. Following is the list of configuration parameters to be set from flashvars:
+            <ol>
+            		<li><b>playlistFile: </b>Use this parammeter to pass the playlist file's path via the flashvars. This opens the possibilities of using this mp3 player multiple times within a single html page because you can then pass a different playlist file to each instance of the mp3 player via flashvars.</li>
+        			<li><b>autoPlay: </b>Possible values are <b>yes</b> and <b>no</b>. If <strong>autoPlay</strong> is set to true then the player will start playing the music track as soon the xml file is loaded otherwise not if set to <b>no</b></li>
+                    <li><b>showPlaylist: </b>You can hide the playlist by setting the value of <b>showPlaylist</b> to <b>no</b>.</li>
+                    <li><b>bufferTime: </b>Use this flashvar to set the buffer size before the music starts playing.</li>
+                    <li><b>showScrollBar: </b>You can hide the scrollbar by setting the value of <strong>showScrollBar</strong> to <strong>no</strong>. If you set the value of showScrollbar to no then you/users can use the mousewheel button to scroll playlist Items.</li>
+                    <li><b>loop: </b>plays all the songs in loop mode.</li>
+              </ol>
+            </li>
+        </ul>
+        <ul>
+            <li>
+              <h3 class="sectionTitle">How do I get special characters such as âæèêíó to show up in text fields?</h3>You need to embed these special characters in the text fields first.
+            <ol>
+        		<li>Open the FLA and select the text field. In the properties panel, press the “Embed” button and you will then see a field labelled “Include these characters” – paste the special characters that you need here.</li>
+              </ol>
+              <div class="note">Note: <div class="noteBody">The encoding of the xml file should always be set to UTF -8. You can set the encoding type by choosing 'save as' and selecting UTF -8.</div></div>
+              <div class="note">Note: <div class="noteBody">Some of the fonts don't support special characters. So make sure that the font you want to use has support of special characters. You can check the character supported by a font by opening the font in a character map.</div></div>
+            </li>
+        </ul>
+        <hr width="100%" size="1" />
+        <hr width="100%" size="1" />
+        <ul>
+            <li>
+              <h3 class="sectionTitle">How to Change the Font or Font Size of the Playlist Item?</h3>
+            <ol>
+        <li>Find <b>LucidMusicPlayerPlaylistItem </b>movieclip inside the Assets folder in the library panel and double click it.</li>
+        <li>Select the textfield and open properties panel.</li>
+                    <li>Change the font face and font size from the properties panel.</li>
+                    <li>Save the file and re-publish the swf file for the changes to take effect.</li>
+              </ol>
+            </li>
+        </ul>
+        <hr width="100%" size="1" />
+        <ul>
+            <li>
+              <h3 class="sectionTitle">How to Change the Font or Font Size of the Now Playing Title?</h3>
+            <ol>
+        <li>Double m<b>usicPlayer </b>movieclip.</li>
+        <li>Select the <strong>musicTitle</strong> textfield and open properties panel.</li>
+                    <li>Change the font face and font size from the properties panel.</li>
+                    <li>Save the file and re-publish the swf file for the changes to take effect.</li>
+              </ol>
+              <div class="note">Note: <div class="noteBody">Similarly you can change the font face and font size of the timeInfo textfield (which shows the music track length and current playing time).</div></div>
+            </li>
+        </ul>
+        <hr width="100%" size="1" />
+        <ul>
+            <li><h3 class="sectionTitle">Included Files/Folders</h3>
+                <ol>
+                    <li>DynamicMP3Player.fla</li>
+                    <li>DynamicMP3Player.swf</li>
+                    <li>DynamicMP3Player.html</li>
+                    <li>xml folder which contains the musicPlaylist.xml file</li>
+                    <li>com folder which contains fuse kit engine and a utility class by bigspaceship design studio</li>
+                    <li>net folder which contains the Music Player's core actionscript class files</li>
+                    <li>as folder</li>
+                    <li>music folder containing the music tracks</li>
+                    <li>help folder containing the help files</li>
+                </ol>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

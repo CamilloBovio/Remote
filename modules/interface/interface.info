@@ -1,0 +1,15 @@
+; $Id: interface.info,v 1.1 2009/09/15 03:34:56 techsoldaten Exp $
+name = Interface
+description = Enables interface creation and management for content entry forms.
+dependencies[] = jquery_ui
+package = Interface
+core = 6.x
+php = 5.2
+
+
+; Information added by drupal.org packaging script on 2009-09-15
+version = "6.x-1.0"
+core = "6.x"
+project = "interface"
+datestamp = "1252987533"
+

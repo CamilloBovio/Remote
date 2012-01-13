@@ -1,0 +1,1160 @@
+<?php
+// $Id: interface.module,v 1.1 2009/09/15 03:34:56 techsoldaten Exp $
+
+/**
+ * @file
+ * Enables interface creation and management for content entry forms.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function interface_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#interface':
+      return '<p>'. t('Interface allows you to define custom interfaces for content entry forms through a drag-and-drop interface.') .'</p>';
+    case 'admin/build/interface':
+      return '<p>'. t('Interface provides the ability to control the look and feel of content entry forms through drag-and-drop templates, allowing form elements to be placed in regions that include AJAX controls.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function interface_menu() {
+  $items['admin/build/interface'] = array(
+    'access arguments'  => array('author interface'),
+    'description'       => "Apply templates to the look and feel of content entry forms.",
+    'file'              => 'interface.admin.inc',
+    'page callback'     => 'interface_select',
+    'title'             => 'Interface',
+  );
+  $items['admin/build/interface/list'] = array(
+    'description'       => "Apply templates to the look and feel of content entry forms.",
+    'title'             => 'Content entry forms',
+    'type'              => MENU_DEFAULT_LOCAL_TASK,
+    'weight'            => -10,
+  );
+  $items['admin/build/interface/themes'] = array(
+    'access arguments'  => array('author interface'),
+    'description'       => "Installed templates for modifying the look and feel of forms.",
+    'file'              => 'interface.admin.inc',
+    'page callback'     => 'interface_themes',
+    'title'             => 'Templates',
+    'type'              => MENU_LOCAL_TASK,
+  );
+  $items['admin/build/interface/edit'] = array(
+    'access arguments'  => array('author interface'),
+    'description'       => "Edit an existing interface.",
+    'page callback'     => 'interface_author',
+    'title'             => 'Edit interface',
+    'type'              => MENU_CALLBACK,
+  );
+  $items['interface/save'] = array(
+    'access arguments'  => array('author interface'),
+    'description'       => "AJAX callback for handling interface submissions.",
+    'page callback'     => 'interface_form_ajax_submit',
+    'type'              => MENU_CALLBACK,
+  );
+  $items['admin/build/interface/delete/%'] = array(
+    'access arguments'  => array('author interface'),
+    'description'       => "Delete an existing interface.",
+    'file'              => 'interface.admin.inc',
+    'page callback'     => 'drupal_get_form',
+    'page arguments'    => array('interface_delete_confirm', 4),
+    'title'             => 'Delete',
+    'type'              => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function interface_perm() {
+  return array(
+    'author interface',
+  );
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function interface_theme() {
+  return array(
+    'interface_list' => array(
+      'arguments' => array('content' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function interface_form_alter(&$form, $form_state, $form_id) {
+  if ($form['#node']) {
+    $context = 'Default';
+    if ($form['#node']->interface_context) {
+      $context = $form['#node']->interface_context;
+    }
+
+    // Associate prerender to allow us to place stuff in regions.
+    // @todo find a way to cache this to avoid database lookups... for right now,
+    // should not be a big deal for the majority of sites, but when contexts are
+    // enabled, it could make a big difference in performance.
+    if (interface_node_type_check($form['#node']->type, $context)) {
+      if (!$form['#pre_render']['interface']) {
+        $form['#pre_render']['interface'] = 'interface_render_regions';
+      }
+    }
+  }
+}
+
+/**
+ * Loads all behaviors for a given template.
+ *
+ * @param $behaviors
+ *   An array containing all behaviors registered for the template.
+ */
+function interface_load_template_behaviors($behaviors) {
+  // Load behaviors. Each template can have one or more behaviors associated
+  // with it. The list of behaviors is passed as an array, including a path to
+  // the behavior. This allows us to have a general behaviors folder as well
+  // as behaviors located within specific template subdirectories.
+  foreach ($behaviors as $key => $row) {
+    drupal_add_js(drupal_get_path('module', 'interface') . $row['path'] .'.js', 'module');
+    $settings['interface_behaviors'][] = $key;
+
+    // If there is additional media associated with the behavior, load it. Additional
+    // media is used exclusively for public interfaces, not just the authoring form.
+    if ($row['js']) {
+      drupal_add_js(drupal_get_path('module', 'interface') . $row['js'], 'module');
+    }
+
+    if ($row['css']) {
+      drupal_add_css(drupal_get_path('module', 'interface') . $row['css']);
+    }
+  }
+
+  // add settings to the page.
+  drupal_add_js($settings, 'setting');
+}
+
+/**
+ * Loads all behaviors for the authoring interface.
+ *
+ * Used to ensure a uniform load of all authoring behaviors and
+ * prevents them from being used during content authoring.
+ */
+function interface_load_authoring_behaviors() {
+
+  // Selectors used for drag-and-drop placement. Interface uses a common set of
+  // CSS selectors for the main authoring tool. Behaviors can implement custom
+  // selectors using hook_register_global_selector(). This hook will add new
+  // selectors once the authoring tool has been loaded.
+  $settings['interface_selectors'][] = '.form-item';
+  $settings['interface_selectors'][] = '.form-button-holder';
+
+  // Exclusions: form elements that cannot be dragged and dropped. Exclusions
+  // are registered by various behaviors and nothing specific is within Interface.
+  $settings['interface_exclusions'][] = '.interface-exclude';
+
+  // @todo replace this with the name of the form being edited
+  // This is used in all selector calls to limit the selection and placement of
+  // form elements to the node form itself. Prevents form elements from being
+  // placed in other forms on the page.
+  $settings['interface_author_limit'] = '#node-form';
+
+  // add settings to the page
+  drupal_add_js($settings, 'setting');
+
+  // @todo Hrm... not sure what this is for, but will investigate. Deletable?
+  $settings['dragndrop'] = array();
+
+  // load core and fixes.
+  jquery_ui_add(array('ui.core'));
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/ui.core.fix.js');
+  jquery_ui_add(array('ui.draggable'));
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/ui.draggable.fix.js');
+  jquery_ui_add(array('ui.droppable', 'ui.resizable'));
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/ui.resizable.fix.js');
+
+  // Load various utility functions.
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/interface_utils.js', 'module');
+
+  // This script loads core interface settings and triggers several hooks in
+  // behavior files for loading custom selectors and initializing behaviors
+  // associated with custom markup. Think of it as bootstrap for Interface.
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/interface_load_settings.js', 'module');
+
+  // This script controls the panel, implementing resizing and functions for saving an interface.
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/interface-panel.js', 'module');
+
+  // This script initializes the drag and drop interface, sets up various methods
+  // for placement in regions,and handles marker placement when authoring an interface.
+  drupal_add_js(drupal_get_path('module', 'interface') .'/behaviors/dragndrop.js', 'module');
+}
+
+/**
+ * Creates the authoring interface for node forms.
+ *
+ * This function does several things:
+ *
+ *   1) Creates the environment for authoring interfaces using
+ *      the selected template and global behaviors.
+ *
+ *   2) Creates a node form using credentials of the user authoring the
+ *      interface. It is a good idea to author interfaces through a user
+ *      with sufficient privileges for seeing all form fields in a node form.
+ *
+ *   3) Repositions form elements within template regions for authored
+ *      interfaces. There is a lot of work involved in getting form elements
+ *      into the right places once a template has been saved to the database.
+ *
+ * @param $node_type
+ *   The node form to be edited.
+ * @param $theme
+ *   The theme used to render the form output.
+ * @param $interface_context
+ *   The context to display the form.
+ */
+function interface_author($node_type = '', $theme = '', $interface_context = '') {
+  interface_load_authoring_behaviors(); // load the various libraries necessary.
+  include_once 'modules/node/node.pages.inc'; // so we can work with the form.
+  global $user; // so we can initialize a fake form owned by this user.
+  $output = '';
+
+  $form_template = $theme;
+  $template_data = interface_get_template($form_template);
+
+  // set information about regions, to be used in processing form elements.
+  $info['regions'] = $template_data['info']['regions'];
+
+  // add regions as a setting. we are going to expose all regions through a
+  // javascript setting. this requires each region to have a css class
+  // matching the name of the region.
+  $interface['regions'] = '';
+  foreach ($info['regions'] as $key => $item) {
+    $interface['regions'][] = $key;
+  }
+
+  drupal_add_js($interface, 'setting');
+
+  // add css for interface controls.
+  // these controls are only used in authoring, not in normal form usage.
+  drupal_add_css( drupal_get_path('module', 'interface') .'/interface.css');
+
+  // add the jquery forms plugin.
+  drupal_add_js('misc/jquery.form.js');
+
+  // load behaviors for the authoring form. moving this out into its own
+  // function for a couple of reasons. First, to reduce the size of interface_author,
+  // which is getting monstrous. Second, to work on behaviors a little more closely
+  // - the order of operations is important, and several things need to load
+  // before the main interface authoring stuff.
+  interface_load_template_behaviors($template_data['info']['behaviors']);
+
+  // load the form array. this creates a form object to wrap with markup received
+  // from the template. form elements will be placed into regions, which will be
+  // displayed within the markup of the form. most of this comes out of node.module.
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_id = $node_type .'_node_form'; // get the name of the node form
+  $node = array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $node_type, 'language' => '', 'interface_context' => $interface_context);
+
+  $form_state['post'] = $_POST;
+
+  // Use a copy of the function's arguments for manipulation. Forcing the
+  // generation of the form regardless of options passed into it. This makes
+  // interface work ONLY with single page forms, may not be very useful for webform, etc.
+  $args = func_get_args();
+  $args_temp = $args;
+  $args_temp[0] = &$form_state;
+  $args_temp[1] = &$node; // fake node rendered.
+  array_unshift($args_temp, $form_id);
+
+  // Actually retrieve the form.
+  $nodeform = call_user_func_array('drupal_retrieve_form', $args_temp);
+  $form_build_id = 'form-'. md5(uniqid(mt_rand(), TRUE));
+  $form['#build_id'] = $form_build_id;
+  drupal_prepare_form($form_id, $nodeform, $form_state);
+
+  // Process the form, adding stuff like titles and body fields.
+  // It APPEARS hook_form_alter() runs when this is called.
+  drupal_process_form($form_id, $nodeform, $form_state);
+
+  // Process the form to add contextual information to all elements.
+  // This gives us position data for all form elements.
+  $node_element_data = interface_get_contextual_information($nodeform);
+
+  // Position elements within the new form structure.
+  $newform = interface_render_regions($nodeform, $form_template, $interface_context);
+
+  // Add in the interface panel, for saving the form once it is configured.
+  $output .= interface_panel($node_type, $form_template, $node_element_data, $interface_context);
+
+  // Render the new form with the markup included.
+  $output .= drupal_render_form($form_id, $newform);
+
+  return $output;
+}
+
+/**
+ * Pulls behaviors defined for a form and pre-populates an array with them.
+ *
+ * @param $newform
+ *   Array used for holding the structure of the form that will be rendered.
+ * @param $behaviors
+ *   Array of all the behaviors that will be applied.
+ */
+function interface_add_behaviors(&$newform, &$behaviors, $template, $interface_context) {
+  foreach ($behaviors as $behavior) {
+    $behavior_name = $behavior['id'] . '_interface_load_behavior';
+    if (function_exists($behavior_name)) {
+      $behavior_name($newform, $template, $interface_context);
+    }
+  }
+
+  // @todo figure out what Marc was thinking here...
+  interface_invoke_interface_behaviors($behaviors, 'load', $newform);
+}
+
+/**
+ * Pulls regions from a template and pre-populates an array with them.
+ *
+ * @param $region_data
+ *   A list of all regions, from the info file.
+ * @param $template_markup
+ *   Contents of the template file.
+ * @param $newform
+ *   Array used for holding the structure of the form that will be rendered.
+ */
+function interface_construct_regions($region_data, $template_markup, &$newform) {
+
+  // split the markup regions of the form at the <!-- region --> indicator and
+  // store in an array. the elements of this array will be used to layout the form.
+  $regions = split('<!-- region -->', $template_markup);
+
+  // loop around the regions defined in the info file and match them up with
+  // markup regions. there should be regions + 1 elements within the markup
+  // array. This is just an arbitrary number, and should be higher than the
+  // weight of any conceivable form element.
+  $idx = -1000;
+
+  // @todo need to rewrite region handling stuff: throwing errors in weird places.
+  // Going to take the list of regions and assign stuff automatically. First
+  // off, we always know what closure is, let's just put that at the end.
+  $newform['closure'] = array(
+    '#type' => 'markup',
+    '#value' => $regions[count($regions)],
+    '#weight' => 0
+  );
+
+  unset($regions[count($regions)]);
+
+  // for everything else, there must be an rid identifying the region.
+  foreach ($regions as $elem) {
+    foreach (array_keys($region_data) as $key) {
+      if (strpos($elem, $key) && !$newform[$key]) {
+        // adding &nbsp; to ensure it will display.
+        $newform[$key] = array(
+          '#type' => 'markup',
+          '#prefix' => $elem,
+          '#value' => '<div class="hide">&nbsp;</div>',
+          '#weight' => $idx
+        );
+        unset($regions[$key]);
+      }
+    }
+    $idx++;
+  }
+}
+
+/**
+ * Saves information about the placement of elements within interfaces.
+ *
+ * This function clears out all information about the current interface and
+ * saves all new information. This method ensures there will always be a
+ * 'clean' read of the interface form.
+ */
+function interface_form_ajax_submit() {
+  // @todo Potential CSS problem; needs to go into form submit of some sort.
+  $form = check_plain($_POST['positioning']);
+  $template = check_plain($_POST['template']);
+  $node_type = check_plain($_POST['node-type']);
+  $behaviors = check_plain($_POST['interface-behaviors-custom']);
+  $interface_context = check_plain($_POST['interface_context']);
+
+  // Delete all existing information about the form.
+  db_query("DELETE FROM {interface_template} WHERE template = '%s' AND content_type = '%s' AND interface_context = '%s'", $template, $node_type, $interface_context);
+
+  // form element data about order is being stored in the system arbitrarily.
+  // @todo store order as part of the placement field. right now, this is
+  // storing placement just in the order the fields came out.
+  $count = 0;
+
+  foreach (explode(',', $form) as $field) {
+    list($path, $name, $weight) = explode('||', $field);
+    $path = str_replace('FORM.interface_startform.', '', $path);
+    db_query("INSERT INTO {interface_template} (template, content_type, interface_context, src, placement, element_order) VALUES ('%s', '%s', '%s', '%s', '%s', %d)", $template, $node_type, $interface_context, $name, $path, $weight);
+    $count++;
+  }
+
+  interface_save_behaviors($behaviors, $node_type, $template, $interface_context);
+  drupal_set_message(t('The interface for @type has been saved.', array('@type' => $node_type)));
+  exit;
+}
+
+/**
+ * @todo This function needs to be documented.
+ */
+function interface_save_behaviors($behavior_data, $node_type, $template, $interface_context) {
+  // we should be getting a keyed array from interface that includes the names
+  // of all behaviors. loop around it and check to see if a function exists.
+  $behavior_data = utf8_encode(htmlspecialchars_decode($behavior_data));
+
+  if (get_magic_quotes_gpc()) {
+    $behavior_data = stripslashes($behavior_data);
+  }
+
+  $behaviors = json_decode($behavior_data, TRUE);
+  // this gives us an array containing all the plug-ins reporting data.
+  // now we want to pass that data into the save handlers for each behavior.
+  // we are not going to check to see if these exist, passing data back
+  // presumes a save handler is present in the plug in module.
+  foreach ($behaviors as $key => $row) {
+    $handler = $key . "_interface_save_behavior";
+    $handler($row, $node_type, $template, $interface_context);
+  }
+}
+
+/**
+ * Invoke a hook_interface_behaviors() operation in all modules.
+ *
+ * @param &$behaviors
+ *   A behavior array.
+ * @param $op
+ *   A string containing the name of the behavior operation.
+ * @return
+ *   The returned value of the invoked hooks.
+ */
+function interface_invoke_interface_behaviors(&$behaviors, $op, &$template = NULL) {
+  $return = array();
+  foreach (module_implements('interface_behaviors_'. $op) as $name) {
+    $function = $name .'_interface_behaviors_'. $op;
+    $result = $function($behaviors, $template);
+    if (isset($result) && is_array($result)) {
+      $return = array_merge($return, $result);
+    }
+    elseif (isset($result)) {
+      $return[] = $result;
+    }
+  }
+  return $return;
+}
+
+/**
+ * Loads template information and prepares interfaces for processing.
+ */
+function interface_get_template($template) {
+  // This will contain information on the regions used to populate the form.
+  $template_info['info_path'] = drupal_get_path('module', 'interface') .'/templates/' . $template . '/' . $template .'.info';
+  $template_info['info'] = drupal_parse_info_file($template_info['info_path']);
+
+  // template path: this defines where the template for displaying the form comes from.
+  $template_info['template_path'] = drupal_get_path('module', 'interface') .'/templates/' . $template . '/' . $template .'.tpl.php';
+  $template_info['template'] = fopen($template_info['template_path'], 'rb'); // load the file into our array.
+  $template_info['contents'] = fread($template_info['template'], filesize($template_info['template_path']));
+
+  // load all css required by the template.
+  foreach ($template_info['info']['css'] as $item) {
+    drupal_add_css(drupal_get_path('module', 'interface') .'/templates/' . $template . '/' . $item);
+  }
+
+  // if a page_template is specified, set it as a global variable here. This
+  // will be picked up by later preprocessing functions to set the page
+  // for the template when displaying.
+  if ($template_info['info']['page_template']) {
+    global $_interface_page_template;
+    $_interface_page_template = $template_info['info']['page_template'];
+  }
+
+  return $template_info;
+}
+
+/**
+ * Implementation of hook_preprocess().
+ */
+function interface_preprocess(&$variables, $hook) {
+  global $_interface_page_template;
+  if ($hook == 'page' && $_interface_page_template) {
+    $variables['template_files'][] = $_interface_page_template;
+  }
+}
+
+/**
+ * Creates a description of Drupal form constructors in a one-dimensional array.
+ *
+ * This array describes the placement of fields within the form hierarchy:
+ *
+ *   [ key ] => [ placement ]
+ *
+ * where key is the unique id for the form element, and placement is a string
+ * indicating where the element lives relative to other form fields,
+ * i.e. body_field.body.
+ *
+ * @param $someform
+ *   A reference to the original form array.
+ * @return
+ *   Associative array indexed by unique identifier for form elements. Each
+ *   array element contains the placement of the form element within the
+ *   form constructor hierarchy.
+ */
+function interface_get_contextual_information(&$someform) {
+  $outer = array(); // for storing all form field information
+  interface_display_item_info($someform, 0, '', $outer);
+  return $outer;
+}
+
+/**
+ * Find the placement of form elements within the original form constructor.
+ *
+ * This is a recursive function used to find the placement of form elements
+ * within the original form constructor. It operates by looping through all
+ * elements in the form contructor array and reporting back their location to
+ * an outer array (called $outer). This function will loop over itself to
+ * report information back to outer, and will ignore information that is not
+ * relevant to the placement of form elements within the interface.
+ *
+ * @param $elem
+ *   The form element being viewed. Starts with the constructor
+ *    array and moves its way down into the individual form elements.
+ * @param $level
+ *   Hierarchical level of the element. 0 for root level elements.
+ * @param $parent
+ *   Position of the form element relative to others. Used to tell Drupal how
+ *   to pull the element from the form when an authored interface is displayed.
+ * @param $outer
+ *   Used for storing form elements that have been processed.
+ */
+function interface_display_item_info(&$elem, $level = 0, $parent = 'root', &$outer = array()) {
+  // All we are really interested in with this function is a list of the form
+  // placement of everything from the original form. A bunch of hidden fields
+  // will be passed into the panel so that we can match the unique names of form
+  // elements with positions within a region.
+
+  // Space is really useful when debugging this function. It is a counter, used
+  // when displaying element information within PRE tags. It helps people
+  // visualize the position of elements within the form constructor hierarchy.
+  $space = '';
+
+  // loop around space to create some indentation for form elements.
+  for ($i=0; $i < $level; $i++) {
+    $space = $space . '   ';
+  }
+
+  // Exclude is a list of form elements we'll ignore. These elements are
+  // generated when the form is being processed and will never be needed when
+  // authoring an interface. While these items will always be hidden fields, we
+  // are going to explictly list them and ignore them laterto avoid weirdness
+  // that can occur if someone was to make them visible.
+  $exclude = array(
+    '#parents'          => '#parents',
+    '#field_info'       => '#field_info',
+    '#array_parents'    => '#array_parents',
+    '#attributes'       => '#attributes',
+    '#process'          => '#process',
+    '#after_build'      => '#after_build',
+    '#options'          => '#options',
+    '#submit'           => '#submit',
+    '#element_validate' => '#element_validate',
+  );
+
+  // Loop through all form elements to see if we are looking at a form element
+  // or some array storing other form elements. Things like fieldsets (which
+  // interface refers to as groupers) can store elements within themselves, and
+  // Drupal will treat them different ways. What is important for interface is
+  // to know where elements are in relation to groupers, and this is accomplished
+  // by indexing each element based on the associative index of the parent.
+  foreach ($elem as $row => $item)  {
+    // Determine if we are looking at a form element for placement in outer.
+    // Exclude certain form fields that can cause weirdness, and all hidden fields.
+    // hidden fields will never be positioned within an interface.
+
+    // @todo add logic for checking for groupers. Groupers will be used to
+    // detect the placement of elements within fieldsets and communicate info
+    // about placement back to Drupal after authoring an interface.
+    $check = ($row === 0) ? 'wasabi' : $row;
+
+    if (is_array($item) && !in_array($check, $exclude) && $item['#type'] != 'hidden') {
+      // Check to see if parent has already been populated. TRUE when called recursively.
+      $status = (drupal_strlen($parent) > 0) ? $parent . '.' . $row : $row;
+
+      // DEBUG: shows the item being placed along with its position in the form constructor heirarchy.
+      // print $space . 'Found form element <strong>' . $row . ' </strong> at position <strong>' . $status . '</strong><br><br>';
+
+      // Store the item in outer. we are only concerned with the unique identifier
+      // for the form element. now, things like fieldsets will not have ids, and
+      // will need to be identified in a new and unique manner. EASTER EGG <---.
+      if ($item['#id']) { // standard form element; can be reported back to container.
+        $outer[$item['#id']] = $status;
+      }
+      else { // this is a bad check for groupers. some groupers do not have parents...
+        // otherwise, this is a grouper, it has passed checks on the exclude list and
+        // is not a hidden field. we will store it's placement in the form array using
+        // some other method. Interface does allow repositioning of fieldsets, and
+        // there will need to be a unique identifier for the item. Going to add an
+        // id to each element as an attribute. This could potentially conflict with
+        // exisiting id elements, need to check to make sure they do not already exist.
+        // Modifying form elements at this stage SHOULD be alright, so long as groupers
+        // remain markup and are not going to be submitted to Drupal.
+        $uname = $row;
+        if (!$outer[$uname]) {
+          // if the element name DOES NOT already exist, create a reference to it in outer
+          // that includes the placement of the item in the constructor heirarchy.
+          $outer[$uname] = $status;
+
+          // aha! cck fields like to have multiple values
+          // if($elem[$row][0]['value']['#id']){
+          //   $uname = $elem[$row][0]['value']['#id'];
+          // }
+
+          // assign an id to the element for use in saving authored interfaces.
+          $elem[$row]['#attributes']['id'] = $uname;
+        }
+        else {
+          // if the element name DOES already exist, create a unique id for it
+          // before referencing the item in outer. Afterwards, store the placement
+          // of the item in the constructor heirarchy.
+
+          $counter = 0; // loop through the names of elements in outer.
+          $check = $uname . '-' . $counter; // unique name for the item in outer.
+
+          // loop around outer to see if there is a unique name for the element or not.
+          while ($outer[$check]) {
+            $counter++;
+            $check = $uname . '-' . $counter;
+          }
+          $uname = $check;
+
+          // store the placement of the element within the outer holder.
+          $outer[$uname] = $status;
+
+          // assign an id to the element for use in saving authored interfaces.
+          $elem[$row]['#attributes']['id'] = $uname;
+        }
+      }
+
+      // NOTE: good thing to do is check form elements to make sure they are
+      // getting id attributes passed in. Theme functions for groupers will
+      // need to implement drupal_attributes to make sure they get unique IDs.
+
+      // Drill down through individual elements to add more 'stuff' to the new constructor.
+      interface_display_item_info($elem[$row], ($level+1), $status, $outer);
+    }
+    else {
+      // These are the form elements not being processed. leaving this comment
+      // in, as various CCK node types are throwing off the positioning logic.
+      // working to resolve the issue is tedious, this is a good place to debug
+      // form elements that are not playing nice... here is the logic for
+      // determining if something is a form element or not:
+      // is_array($item) && !in_array($row, $exclude) && $item['#type'] != 'hidden'
+
+      // example debug script. used to track down issue with is_array being
+      // passed 0 values as needle, throwing off rendering of some CCK forms.
+      /*
+      $testing = '0';
+      if ($row == $testing && is_array($item)) {
+        print '<pre>';
+        var_export($row . ' - ');
+        var_export($item);
+        print '</pre>';
+        if (is_array($item)) {
+          print '<pre>';
+          var_export('the item is an array');
+          print '</pre>';
+        }
+        if (!in_array($row, $exclude)) {
+          print '<pre>';
+          var_export('the item is not excluded');
+          print '</pre>';
+        } else {
+          print '<pre>';
+          var_export('the item is excluded - ');
+          var_export(array_search($row, $exclude));
+          print '</pre>';
+          print '<pre>';
+          var_export($row);
+          print '</pre>';
+          print '<pre>';
+          var_export($exclude);
+          print '</pre>';
+        }
+        if ($item['#type'] != 'hidden') {
+          print '<pre>';
+          var_export('the item is not hidden');
+          print '</pre>';
+        }
+        print '<pre>';
+        var_export('----------------------');
+        print '</pre>';
+      }
+      */
+    }
+  }
+}
+
+/**
+ * Place form elements within their appropriate regions.
+ *
+ * Repositioning elements is triggered through a pre_render element,
+ * placed in the form array through a hook_form_alter().
+ *
+ * @param $form
+ *   The form constructor, which should be unaltered at this point.
+ * @return $form
+ *   The modified form (also changed by reference).
+ */
+function interface_render_regions(&$form, $template = '', $context = '') {
+  // All you have is the form here, no information about the template authored
+  // for the interface. Going to need to determine what template is being used
+  // with the form in order to proceed. In the initial version of interface,
+  // we will allow one form to be associated with one template. This will eliminate
+  // issues with needing to know what template to use when there are multiple
+  // interfaces associated with a form.
+  //
+  // In later editions of interface, we will allow separate forms to be associated
+  // with each template based on the role of the user. This will change the way
+  // interfaces are processed. For now, it means we can get by with only the form.
+
+  $node_type = $form['#node']->type;
+
+  $context = 'Default';
+  if ($form['#node']->interface_context) {
+    $context = $form['#node']->interface_context;
+  }
+
+  // Load information about the node form being presented. This will give us the template for further processing.
+  $result = db_query("SELECT * FROM {interface_template} WHERE content_type = '%s' AND interface_context = '%s' ORDER BY src ASC", $node_type, $context);
+  // transform the results into an array, for easier processing.
+  while ($row = db_fetch_array($result)) {
+    $rows[] = $row;
+  }
+
+  // Determine what template to use for the interface. Take the first value
+  // from the array as there can only be one template for a single form.
+  $template = ($template == '') ? $rows[0]['template'] : $template;
+  $template_data = interface_get_template($template, $context);
+
+  // move key elements from the node form to the new form. these items need to remain constant.
+  // keeping these elements in the main constructor function rather than use references. unsetting
+  // a variable in a reference only removes the reference, it does not affect the source variable.
+  $newform['#id'] = $nodeform['#id'];
+  $newform['nid'] = $nodeform['nid'];
+  $newform['vid'] = $nodeform['vid'];
+  $newform['uid'] = $nodeform['uid'];
+  $newform['created'] = $nodeform['created'];
+  $newform['type'] = $nodeform['type'];
+  $newform['#type'] = $node_type;
+  $newform['language'] = $nodeform['language'];
+  $newform['changed'] = $nodeform['changed'];
+  unset($nodeform['#id']);
+  unset($nodeform['nid']);
+  unset($nodeform['vid']);
+  unset($nodeform['uid']);
+  unset($nodeform['created']);
+  unset($nodeform['type']);
+  unset($nodeform['#type']);
+  unset($nodeform['language']);
+  unset($nodeform['changed']);
+
+  // at this point, we have the following:
+  // info_regions: a list of regions from the info file
+  // regions: an array containing all of the markup from the template file,
+  // split with the <!-- region --> tag.
+  //
+  // in order to present form elements within regions, we need to reconcile the
+  // keys from the info file with the markup elements from the template. This
+  // happens by looping through each region element (info_regions) and checking
+  // whether or not the key exists within the region markup (from regions). It
+  // is a straight string comparision to reconcile these elements.
+  //
+  // This should provide the structure for a new form, where form
+  // elements can be placed within the appropriate markup section.
+  interface_construct_regions($template_data['info']['regions'], $template_data['contents'], $newform);
+
+  // fire off any initialization functions associated with behaviors, pass in
+  // the new form constructor to store any markup or carry out any operations.
+  interface_add_behaviors($newform, $template_data['info']['behaviors'], $template, $context);
+
+  // Reconcile the placement of form elements within the newform. There
+  // is a simple order of operations for proper form element placement:
+  //
+  // 1) Loop through all form elements placed in the interface for the form.
+  //
+  // 2) For each item, construct a string refencing the element in the original form.
+  //    This will be used within various eval functions later in processing.
+  //
+  // 3) For each item, constuct a string referencing the element's placement
+  //    in the new form. This will be used within various eval functions.
+  //
+  // 4) Move each item from the original form to the new form using an
+  //    eval function. This will  place each element in the new form.
+  //
+  // 5) Once each element from the original form has been placed in the new form,
+  //    remove each element from the original form using unset in an eval function.
+  //    This ensures the item has been removed properly and avoids weird ref issues.
+  //
+  // 6) Merge the original form with the new one.
+
+  // source_elements: Storage for element placement within the original form.
+  // We are going to store all source strings in this array, then loop through
+  // them later and delete each one prior to merging the forms.
+  $source_elements = array();
+
+  // Loop through each form element in the interface to place elements correctly.
+  // The following code constructs an elaborate eval statement that will be used
+  // to move elements from the original constructor to the new form constructor.
+  if ($rows) {
+    foreach ($rows as $row) {
+
+      // RIGHT SIDE: this is what will be placed in new form. Searching for an
+      // item in the original constructor. Explode the original to get an array.
+      $src_tree = explode('.', $row['src']);
+      $source = "\$form";
+
+      // loop around each source element to create a string. This will
+      // be used to reference the original form item later in processing.
+      foreach ($src_tree as $item) {
+        $source .= '["' . $item . '"]';
+      }
+
+      // LEFT SIDE: this tells us where to plant the form item
+      // in the new form. This string will be eval'd later.
+      $dest_tree = explode('.', $row['placement']);
+      $dest = "\$newform";
+
+      foreach ($dest_tree as $item) {
+        $item = str_replace('#', '', $item);
+        $dest .= '["' . $item . '"]';
+      }
+
+      // create the string for actually moving the element. Do not delete elements
+      // from the original form at this stage, in order to preserve any sub-elements
+      // that may be referenced later in form generation.
+      $move_string = $dest . " = " . $source . ";";
+      eval($move_string); error_log($move_string);
+
+      // set the weight of the element.
+      $weight_string = $dest . '["#weight"] = ' . $row['element_order'] . ';';
+      eval($weight_string);
+
+      // TRAFFIC COP: for each new element, remove any child elements that may
+      // be appearing. this ensures child elements of groupers will not be
+      // duplicated in the new form layout.
+
+      // Get the destination element and remove any child elements.
+      // DO NOT remove hidden fields, only form elements users can position.
+      eval('$dat = ' . $dest . ';');
+      if (isset($dat)) {
+        foreach ($dat as $child_idx => $child_elem) {
+          if (is_array($dat[$child_idx]) && isset($dat[$child_idx]['#type']) && $dat[$child_idx]['#type'] != 'hidden') {
+            eval('unset(' . $dest . '[\'' . $child_idx . '\']);'); // heh heh
+          }
+        }
+      }
+
+      $source_elements[] = $source; // so it can be unset later before a merge.
+    }
+  }
+
+  // unset source elements from the original form. This happens in order to allow
+  // us to merge hidden fields from the original form into the interface form.
+  foreach ($source_elements as $remove) {
+    $formremove = "unset(" . $remove . ");";
+    eval($formremove);
+  }
+
+  // Remove the prerender function set in hook form alter.
+  // This prevents the region rendering code from firing twice.
+  unset($form['#pre_render']['interface']);
+
+  // these elements must be contained in the root level element of the form to allow proper processing
+  $exclude = array('#id', 'nid', 'vid', 'uid', 'created', 'type', 'language', 'changed', '#node', '#validate',
+    '#theme', '#parameters', '#type', '#programmed', '#token', 'form_token', 'form_id', '#description', '#attributes',
+    '#required', '#tree', '#parents', '#method', '#action', '#cache', '#submit', '#processed', '#defaults_loaded',
+    '#prefix', '#suffix');
+
+  // everything else from the form should be moved to a default region in the form display.
+  if ($template_data['info']['default_region']) {
+    foreach ($form as $key => $elem) {
+      if (in_array($key, $exclude)) {
+        $newform[$key] = $elem;
+      }
+      else {
+        $newform[$template_data['info']['default_region']][$key] = $elem;
+      }
+
+      unset($form[$key]);
+    }
+  }
+
+  // Merge our rearranged elements back into the original form and return it.
+  return array_merge($newform, $form);
+}
+
+/**
+ * Creates the interface panel, a utility for authoring form interfaces.
+ *
+ * The panel presents users with basic information about the form, and serve as
+ * a display for attributes and actions associated with specific form elements.
+ *
+ * @param $node_type
+ *   The node type for the form. Used to associate interfaces with
+ *   specific node types when the form is presented to users.
+ * @param $template
+ *   The template associated with the form. This information is saved to the
+ *   database when the interface is saved. This is being done in anticipation of
+ *   multiple interfaces for specific forms, implemented in later iterations of
+ *   the module.
+ * @param $elem_data
+ *   Data about the placement of form elements, in the form of [ element id ] =>
+ *   [ placement in the form constructor heirarchy ]. This placement is used as
+ *   reference to the original element when positioning elements in node forms.
+ * @return
+ *   The actual markup used for the panel.
+ */
+function interface_panel($node_type, $template, $elem_data = array(), $interface_context = '') {
+  // Create the basic settings form. this will display the name of the content
+  // type you are editing, the selected template for the form, and controls.
+  $context = $interface_context;
+  if ($context == '') {
+    // @todo this is really sloppy, bubs.
+    $context                    = 'Default';
+    $interface_context          = 'Default';
+    $edit['interface_context']  = 'Default';
+  }
+
+  $basic_details = array(
+    'markup'            => t('You are editing the <strong>%type</strong> form using the <strong>%template</strong> template.<hr />The context for this interface is <strong class="context-value">%context</strong><hr />', array('%type' => $node_type, '%template' => $template, '%context' => $context)),
+    'template'          => $template,
+    'node-type'         => $node_type,
+    'interface_context' => $interface_context,
+  );
+
+  // get the basic form used to save form elements.
+  $form = drupal_get_form('interface_main_controls', $basic_details, $elem_data);
+
+  // @todo populate this with other settings information for the form.
+  $settings = array(
+    'interface_context' => $context,
+  );
+
+  // get the form used to control settings for this interface.
+  $settings_form = drupal_get_form('interface_settings_form', $settings);
+
+  $back_button = t('Back');
+
+  // Create the panel. Create separate markup areas for controlling the form,
+  // individual elements, regions and contextual information about form placement.
+  // @todo Remove all the default attributes and put in a dynamic attributes
+  // control. This is necessary for allowing users to edit attributes manually.
+  // Should be implemented as a behavior.
+  $output .= <<<PAN
+  <div id="interface_controls">
+    <div id="interface_handle"></div>
+    <div id="interface_status_bar">
+      Interface
+      <div id="interface_default_button"><input type="button" value="{$back_button}" /></div>
+      <div id="interface_selected">
+        FORM
+      </div>
+    </div>
+    <div id="interface_context_form">
+      $form
+    </div>
+    <div id="interface_settings_screen">
+      $settings_form
+    </div>
+    <div id="interface_element_form">
+      <div id="ief_left_panel">
+        <div id="interface_element_label" class="el_attr"><span class="el_label">Label:</span><span class="el_data"></span></div>
+        <div id="interface_element_description" class="el_attr"><span class="el_label">Description:</span><span class="el_data"></span></div>
+        <div id="interface_element_required" class="el_attr"><span class="el_label">Required:</span><span class="el_data"></span></div>
+        <div class="clear"></div>
+      </div>
+      <div id="ief_right_panel">
+        <strong>Actions</strong>
+        <div class="interface_element_actions">
+        </div>
+      </div>
+    </div>
+    <div id="interface_region_form"></div>
+  </div>
+PAN;
+  return $output;
+}
+
+/**
+ * Used as part of the panel builder; see interface_panel().
+ */
+function interface_settings_form(&$form_state, $vars) {
+  $form['settings']['interface_naming'] = array(
+    '#description'  => t('Give this interface a name for its context. Contexts are references used to recall the interface, and allow forms to be displayed in multiple ways within a single site. Use only letters, numbers and underscores in the name of the context. Interface contexts named \'Default\' will display by default on a content entry form; other names can be called programatically.'),
+    '#type'         => 'textfield',
+    '#value'        => $vars['interface_context'],
+  );
+  $form['settings']['done'] = array(
+    '#type'         => 'button',
+    '#value'        => t('Done'),
+  );
+
+  return $form;
+}
+
+/**
+ * Form constructor for the main control panel used when editing interfaces.
+ *
+ * @param $form_state
+ *   The current $form_state, if any.
+ * @param $edit
+ *   Associative array containing information about the form being edited. This
+ *   includes 'markup', any information about the form to be presented to users,
+ *   'template', the template implemented for the form, and 'node-type', the
+ *   node type of the form being edited.
+ * @param $elems
+ *   List of form elements contained in the node_form, along with placement in
+ *   the form constructor heirarchy. This array is used to generate a list of
+ *   hidden fields for processing interface submissions.
+ */
+function interface_main_controls(&$form_state, $edit = array('markup' => '', 'template' => '', 'node-type' => '', 'interface_context' => ''), $elems = array()) {
+  // The main panel contains information about the node form being edited. It is
+  // important to remember that panels are separate from the form itself, and
+  // information about the node_form needs to be stored here in order to associate
+  // it properly once the authored interface is submitted back to Drupal. form-elems
+  // is used as a container for hidden fields about the node_form. These fields
+  // are referenced through jquery, so the name of this element should not change.
+  $form['form-elems'] = array(
+    '#type'   => 'markup',
+    '#prefix' => '<div class="interface_form_elems">',
+    '#suffix' => '</div>',
+  );
+
+  // The positioning element, used to store the placement of form elements within regions
+  // once an interface has been authored. This element remains empty until submission.
+  $form['form-elems']['positioning'] = array(
+    '#type'   => 'hidden',
+    '#value'  => '',
+  );
+
+  // Iterate a hidden field for all editable form fields contained in the node_form.
+  // Each element will be referenced by id, prefixed with 'interface-'. The value
+  // of each hidden field will be set to the position of the form element within
+  // the heirarchy of the form constructor.
+  foreach ($elems as $row => $item) {
+    $form['form-elems']['interface-' . $row] = array(
+      '#type'   => 'hidden',
+      '#value'  => $item,
+    );
+  }
+
+  // create a form element for storing custom data. This will contain
+  // keyed arrays of information from behaviors passed back into Drupal.
+  $form['form-elems']['interface-behaviors-custom'] = array(
+    '#type' => 'hidden',
+    '#value' => $item,
+  );
+
+  // Construct the form containing controls for saving the authored interface.
+  $form['left-panel'] = array(
+    '#type'     => 'markup',
+    '#prefix'   => '<div class="interface_admin_left_panel">',
+    '#suffix'   => '</div>',
+  );
+  $form['left-panel']['markup'] = array(
+    '#type'     => 'markup',
+    '#value'    => $edit['markup'],
+  );
+  $form['left-panel']['template'] = array(
+    '#type'     => 'hidden',
+    '#value'    => $edit['template'],
+  );
+  $form['left-panel']['node-type'] = array(
+    '#type'     => 'hidden',
+    '#value'    => $edit['node-type'],
+  );
+
+  // Contexts are used to present forms in different ways within the same web site.
+  $form['left-panel']['interface_context'] = array(
+    '#type'     => 'hidden',
+    '#value'    => $edit['interface_context'],
+  );
+  $form['left-panel']['context'] = array(
+    '#type'     => 'submit',
+    '#value'    => t('Edit interface settings'),
+  );
+  $form['left-panel']['save_interface'] = array(
+    '#type'     => 'submit',
+    '#value'    => t('Save interface'),
+  );
+  $form['left-panel']['cancel'] = array(
+    '#type'     => 'submit',
+    '#value'    => t('Cancel'),
+  );
+
+  // Toggle controls for looking at various form elements.
+  $form['right-panel'] = array(
+    '#type'     => 'markup',
+    '#prefix'   => '<div class="interface_admin_right_panel">',
+    '#suffix'   => '</div>',
+  );
+  $form['right-panel']['intro'] = array(
+    '#type'     => 'markup',
+    '#value'    => t('<strong>Interface options</strong>'),
+  );
+  $form['right-panel']['region_handler'] = array(
+    '#type'     => 'checkbox',
+    '#title'    => t('Display regions'),
+  );
+  $form['right-panel']['form_element_handler'] = array(
+    '#type'     => 'checkbox',
+    '#title'    => t('Highlight form elements'),
+  );
+
+  return $form;
+}
+
+/**
+ * Display the list of available node types for node creation.
+ */
+function theme_interface_list($content) {
+  if ($content) {
+    $output = '<dl class="interface-list">';
+    foreach ($content as $item) {
+      $item['href'] = str_replace('node/add', 'admin/build/interface/edit', $item['href']);
+      $output .= '<dt>'. l($item['title'], $item['href'], $item['options']) .'</dt>';
+    }
+    $output .= '</dl>';
+    return $output;
+  }
+}
+
+/**
+ * Checks to see if a content type has a defined interface.
+ *
+ * @param
+ *   $type: the content type to check
+ */
+function interface_node_type_check($type, $interface_context) {
+  // @todo this is only loading the node based on the type. we need to add context
+  return db_result(db_query("SELECT DISTINCT template FROM {interface_template} WHERE content_type = '%s' AND interface_context = '%s'", $type, $interface_context));
+}
+
+/**
+ * Add custom IE6 fix
+ */
+function interface_preprocess_page(&$vars) {
+  $vars['styles'] .= '<!--[if lt IE 7]>
+  <link rel="stylesheet" href="'. base_path() . drupal_get_path('module', 'interface') .'/interface-ie6.css" type="text/css" media="screen"/>
+  <![endif]-->';
+}

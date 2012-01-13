@@ -1,0 +1,66 @@
+<?php
+// $Id: taxonomy_theme.install,v 1.8.2.3 2010/01/04 15:00:45 mkalkbrenner Exp $
+
+/**
+ * Implements hook_schema().
+ */
+function taxonomy_theme_schema() {
+  $schema = array();
+
+  $schema['taxonomy_theme_vids'] = array(
+    'fields' => array(
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Primary Key: The {vocabulary}.vid of the vocabulary to which the theme is assigned.',
+       ),
+      'theme' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+       ),
+     ),
+    'primary key' => array('vid'),
+  );
+
+  $schema['taxonomy_theme_tids'] = array(
+    'fields' => array(
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Primary Key: The {term_data}.tid of the term to which the theme is assigned.',
+      ),
+      'theme' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+       ),
+     ),
+    'primary key' => array('tid'),
+  );
+
+  return $schema;
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function taxonomy_theme_install() {
+  drupal_install_schema('taxonomy_theme');
+}
+
+
+/**
+ * Implements hook_uninstall().
+ */
+function taxonomy_theme_uninstall() {
+  // Drop tables
+  drupal_uninstall_schema('taxonomy_theme');
+}

@@ -1,0 +1,18 @@
+// $Id: CHANGELOG.txt,v 1.1.2.6 2010/03/22 17:05:46 mkalkbrenner Exp $
+
+Taxonomy Theme 6.x-1.0-beta1, 2010-03-22
+-----------------------------------------
+[#710290] incrn8, mkalkbrenner: Call to undefined function themekey_theme_options()
+[       ] mkalkbrenner: reuse ThemeKey UI beautified theme selector
+
+
+Taxonomy Theme 6.x-1.0-alpha2, 2009-01-04
+-----------------------------------------
+[       ] mkalkbrenner: applied "coder" and fixed warnings
+[       ] mkalkbrenner: commented more source code
+[       ] mkalkbrenner: cleaned up code and API
+
+
+Taxonomy Theme 6.x-1.0-alpha1, 2009-12-17
+-----------------------------------------
+[       ] mkalkbrenner: turned Taxonomy Theme into an extension of ThemeKey UI 6.x-2.x

@@ -1,0 +1,23 @@
+@CHARSET "UTF-8";
+#interface_controls {
+  position: absolute;
+  bottom: auto;
+  clear: both;
+  width: 100%;
+  top: expression(eval(document.compatMode &&
+   document.compatMode=='CSS1Compat') ?
+   documentElement.scrollTop
+   +(documentElement.clientHeight-this.clientHeight) - 1
+   : document.body.scrollTop
+   +(document.body.clientHeight-this.clientHeight) - 1);
+}
+
+#interface_controls #interface_context_form .interface_admin_left_panel,
+#interface_controls #interface_context_form .interface_admin_right_panel,
+#ief_left_panel,
+#ief_right_panel {
+  width: 46%;
+}
+#interface_controls .form-item {
+  text-align: left;
+}

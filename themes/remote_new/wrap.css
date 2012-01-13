@@ -1,0 +1,386 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: wrap.css
+     
+*/   
+/*===============================================*/
+
+
+/*--WRAP-----------------------------------------*/
+
+#wrap{
+  width: 960px;
+  height: 100%;
+  margin:auto;
+  background: #fff;
+  margin-top: 450px;
+  border-top: 5px solid #999;
+  border-right: 5px solid #999;
+  border-left: 5px solid #999;
+} 
+
+#top_section{
+  position: absolute;
+  top:0;
+}
+
+
+/*--BLOCK CONTENT--------------------------------*/
+
+.block_content{
+  overflow:hidden;
+  width: 780px;
+  margin: auto;
+  padding: 50px 0 50px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.title_block{
+  border-bottom: 3px solid #222;
+  margin-bottom: 20px;
+  height: 40px;
+}
+
+/*--FEATURED BLOCK-------------------------------*/
+
+.rel_cover{
+  float: left;
+  padding: 20px;
+}
+
+/*--NEWS-----------------------------------------*/
+
+#news_block{
+  width:440px;
+  float: left;
+}
+
+.views-field-title{  /*Title News settings*/
+  margin: 10px 0 5px 0;
+}
+
+.views-field-title{
+  font-weight: bold;
+}
+
+.views-field-title, .views-field-body {
+  width: 380px;
+  margin-left: 240px;
+}
+
+.views-field-field-news-img-fid{
+  float:left;
+  width: 220px;
+  height: 220px;
+}
+
+.imagefield-field_news_img{
+  border: 1px solid #eaeaea;
+}
+
+/*--FEEDBACK-------------------------------------*/
+
+#feedback_block{
+  float: right;
+  width: 300px;
+}
+
+.views-field-field-fb-titolo-value{
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 7px;
+}
+
+.views-field-field-feedback-image-fid{
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+/*--EVENTS---------------------------------------*/
+
+#event_block {
+  margin-top:45px;
+}
+
+.views-field-field-price-value, 
+.views-field-field-artists-value, 
+.views-field-field-location-value, 
+.views-field-field-starting-value, 
+.views-field-field-ev-description-value, 
+.views-field-field-date-name-value, 
+.views-field-field-ev-description-value{
+  width: 540px;
+  margin-left: 240px;
+}
+
+.views-field-field-price-value, 
+.views-field-field-artists-value, 
+.views-field-field-location-value, 
+.views-field-field-starting-value{
+  margin-top: 15px;
+}
+
+.views-field-field-date-name-value,
+.views-label-field-starting-value,
+.views-label-field-location-value,
+.views-label-field-artists-value,
+.views-label-field-price-value
+{
+  display:block;
+  font-weight: bold;
+}
+
+.views-field-field-event-img-fid{
+  width: 220px;
+  float: left;
+}
+
+/*--MUSIC----------------------------------------*/
+
+#music_block{
+  width: 460px;
+  float: left; /*release si affianca*/
+}
+
+/*--RELEASE--------------------------------------*/
+
+#release_block{
+  margin-right:2px;
+  float: right;
+  width: 280px;
+}
+
+.imagefield-field_cover{
+  border: 1px solid #eaeaea;
+}
+
+.views-field-field-release-link-url{ /*bottone di acquisto*/
+  float: right;
+  margin-top:10px;
+  height: 40px;
+}
+
+/*dimensioni della vista*/
+.views-row views-row-1 views-row-odd views-row-first views-row-last{
+  width: 280px;
+ /* height: 340px;*/
+}
+
+/*--GALLERY--------------------------------------*/
+
+#block-views-Gallery-block_1{
+  margin-top: -20px;
+}
+
+.views-field-field-gallery-img-field-fid {
+  padding: 35px 20px 0 20px;
+  float: left;
+
+}
+
+
+/*--GASOLINE FORM--------------------------------*/
+
+#gasoline_img{
+  float: left;
+  height: 380px;
+  width: 380px;
+}
+
+#gasoline_content{
+  float: right;
+  width: 380px;
+  height: 380px;
+}
+
+#send_demo img {
+  margin: auto;
+  margin-top: 120px;
+}
+
+#gasoline_social{
+  margin: 25px 0 0 120px;
+}
+
+.gas_soc {
+  margin: auto;
+}
+
+/*--CONTACT & BOOKING----------------------------*/
+
+#contact_booking{
+  height: 480px;
+}
+
+#links_block{
+  float: left;
+  width: 379px;
+  margin-right: 20px;
+}
+
+.all_links p{
+  height: 1px;
+}
+
+#artist_links{
+}
+
+#sam_links{
+}
+
+#christian_links{
+}
+
+#contact_block{
+  float:right;
+  width: 380px;
+}
+
+#edit-submitted-message, .form-textarea required {
+  min-width: 374px;
+  max-width: 374px;
+  min-height: 150px;
+  max-height: 250px;
+  border: 1px solid #fff;
+  background: #eaeaea;
+  font-family: Arial;
+  font-size: 13px;
+  color: #666;
+  padding: 5px 5px 0 5px;
+  margin-top: -5px;
+}
+
+#edit-submitted-email, .form-text required email,
+#edit-submitted-name, .form-text required, 
+#edit-submitted-surname, .form-text required {
+  overflow:hidden;
+  width: 160px;
+  height: 23px;
+  border: 1px solid #fff;
+  background: #eaeaea;
+  font-family: Arial;
+  padding: 0 5px 0 5px;
+  color: #666;
+  margin-top:-5px;
+}
+
+#edit-submit, .form-submit{
+  cursor:pointer;
+  float: right;
+  margin-right:5px;
+  border: 1px solid #eaeaea;
+  font-family: Arial;
+  color: #666;
+  margin:-10px 0;
+}
+
+
+
+#node-20 .submitted, #contact_block .views-label-webform-form-body, #contact_block .submitted, #contact_block #node-20 a {
+  display:none;
+}
+
+#node-20{
+  width: 380px;
+}
+
+#avvertenze{
+  margin-top:30px;
+}
+
+#avvertenze p{
+  font-size: 8px;
+  color: #999;
+}
+
+/*--LINKS---------------------------------*/
+
+.social_icons img{
+  float: left;
+  margin-right: 10px;
+
+/*
+
+  border: 1px solid #777;
+  -moz-box-shadow:0px 0px 4px #999;
+  -webkit-box-shadow:0px 0px 4px #999;
+  box-shadow:0px 0px 4px #999
+*/
+
+
+}
+
+/*--SCROLLER------------------------------*/
+
+#scroller{
+  cursor:pointer;
+  width:29px;
+  position:fixed;
+  bottom:0;
+  margin-left:960px;
+  margin-bottom:-5px;
+}
+
+/*--FOOTER--------------------------------*/
+
+#footer{
+  height:0px;
+}
+
+#footer_menu{
+  width:515px;
+  margin:auto;
+  margin-top: -20px;
+}
+
+#footer_menu li{
+  cursor:pointer;
+  color: #999;
+  padding: 0 20px 0 20px;
+  border-right: 1px solid #eaeaea;
+}
+
+#footer #firma{
+  width: 130px;
+  margin: auto;
+}
+
+#footer #firma img {
+  padding-top:10px;
+}
+
+/*--USER ACCESS----------------------------*/
+
+#user-login #edit-submit{
+  margin: 0 515px 0 0;
+}
+
+#edit-name-wrapper #edit-name, #edit-pass-wrapper #edit-pass {
+  width: 254px;
+  height: 23px;
+  border: 1px solid #eaeaea;
+  background: #eaeaea;
+  font-family: Arial;
+  padding: 0 5px 0 5px;
+  color: #666;
+}
+
+#edit-name-wrapper .form-required, 
+#edit-pass-wrapper .form-required {
+  color: #444;
+}
+
+.description {
+  color: #444;
+}
+
+#edit-name-wrapper, #edit-pass-wrapper {
+  color: #444;
+}
+
+

@@ -1,0 +1,44 @@
+.tabbable {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.tabbable .tabbable_tabset {
+  border-left: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+}
+.tabbable_tabset_highlight {
+  background-color: #DDDDDD;
+}
+.tabbable .tabbable_tabset .tabbable_tab {
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #999999;
+  padding: 5px;
+  margin: 0px;
+  display: inline;
+  background-color: #CCCCCC;
+}
+.tabbable .tabbable_tabset .tabbable_tab A.tabbable_tab {
+}
+.tabbable .tabbable_tabset .active {
+  background-color: White;
+  border-right: 1px solid #CCCCCC;
+}
+.tabbable .tabbable_content {
+}
+.tabbable .tabbable_content .tabbable_item {
+  border-left: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  padding: 5px;
+  display: none;
+}
+.tabbable .tabbable_content .active {
+  display: block;
+}
+
+#tabbable_changeit {
+  display: inline;
+}
+#tabbable_changeit #tabbable_edit {
+  display: inline;
+}

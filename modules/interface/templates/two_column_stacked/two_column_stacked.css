@@ -1,0 +1,55 @@
+.region_zero {
+  width: 75%;
+  float: left;
+}
+.region_zero LABEL {
+  float: left;
+  width: 75px;
+  text-align: right;
+  margin-right: 10px;
+}
+.region_zero .form-item {
+  margin: 0px 0px 5px 0px;
+}
+
+.region_four {
+  width: 24%;
+  float: left;
+}
+.region_four LABEL {
+  float: left;
+  width: 50px;
+  text-align: right;
+  margin-right: 10px;
+}
+.region_one {
+  width: 75%;
+  float: left;
+  padding-bottom: 10px;
+}
+.region_two,
+.region_three {
+  width: 24%;
+  float: right;
+  padding-bottom: 10px;
+  clear: right;
+}
+.region_one .form-item {
+  margin: 0px;
+}
+.region_zero INPUT {
+  width: auto;
+}
+.region_zero .form-text {
+  width: 445px;
+}
+.region_one INPUT:text,
+.region_two INPUT:text,
+.region_four INPUT:text,
+.region_three INPUT:text {
+  width: 90%;
+}
+
+
+
+

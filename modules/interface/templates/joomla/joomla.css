@@ -1,0 +1,126 @@
+#joomla_container {
+  width: 100%;
+  margin-bottom: 500px;
+  height: 1200px;
+  line-height:100%;
+  font-size: 11px;
+}
+#joomla_container .form-item {
+  font-size: 11px;
+}
+#joomla_container INPUT {
+  border:1px solid #CCCCCC;
+  font-size:11px;
+}
+#joomla_container .joomla_left {
+  width: 60%;
+  float: left;
+  background-color: #F9F9F9;
+  border: 1px solid #D5D5D5;
+  margin: -1px -2px -1px -2px;
+  padding: 3px;
+  min-width: 615px;
+}
+#joomla_container .joomla_left .admin_header {
+  background:transparent url(images/background.jpg) repeat scroll 0 0;
+  color:#000000;
+  font-size:11px;
+  font-weight: bold;
+  height: 15px;
+  padding: 8px 4px 2px;
+  text-align:left;
+}
+#joomla_container .joomla_left_bottom {
+  width: 100%;
+  margin: 3px;
+}
+#joomla_container .joomla_left_bottom_under {
+  width: 100%;
+  margin: 3px;
+}
+#joomla_container .joomla_left_bottom .form-item LABEL, 
+#joomla_container .joomla_left_bottom_under .form-item LABEL {
+  margin: -1px -1px 3px -1px;
+  font-weight: normal;
+}
+#joomla_container .joomla_left #joomla_left_top {
+  width: 100%;
+  margin-top: 5px;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left {
+  width: 50%;
+  margin: -1px -1px -1px -1px;
+  float: left;
+  min-height: 10px;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right {
+  width: 50%;
+  float: left;
+  margin: -1px -1px -1px -1px;
+  min-height: 10px;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left .form-item, 
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right .form-item {
+  margin: 0px;
+  clear: none;
+  padding-left: 5px;
+  padding-top: 1px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left .form-item LABEL, 
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right .form-item LABEL {
+  float: left;
+  width: 150px;
+  margin: -1px -1px -1px -1px;
+  font-weight: normal;
+  padding-top: 3px;
+  width: 25%;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left .form-item INPUT, 
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right .form-item INPUT {
+  width: 215px;
+  margin: -1px 5px -1px 25%;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left .form-item SELECT, 
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right .form-item SELECT {
+  font-size:11px;
+  z-index:-3;
+  color: Black !important;
+  margin: 0px;
+  padding: 0px;
+}
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_left .form-item .description, 
+#joomla_container .joomla_left #joomla_left_top .joomla_left_top_right .form-item .description {
+  display: none;
+}
+#joomla_container .joomla_right {
+  float: left;
+  width: 40%;
+  margin: -1px -2px -1px -2px;
+}
+#joomla_container .joomla_right .joomla_right_container {
+  min-height: 10px;
+}
+#joomla_container .joomla_right FIELDSET {
+  margin: 0px 0px 0px 10px;
+  background: #F9F9F9 none;
+  border: 1px solid #D5D5D5;
+}
+
+.clear {
+  clear: both;
+}
+.hide {
+  display: none;
+}
+.joomla_top {
+  top: 70px;
+  position: absolute;
+  right: 5px;
+  width: 500px;
+}
+.joomla_top_container {
+  min-height: 10px;
+  text-align: right;
+}

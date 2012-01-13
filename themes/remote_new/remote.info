@@ -1,0 +1,39 @@
+; $Id: remote_new.info,v 1.0 2011/04/27 23:27:32 goba Exp $
+name = remote_new
+description = Theme made by bcadsgn.com for remote aka Sam + Christian Cirrione
+version = VERSION
+core = 6.x
+engine = phptemplate
+stylesheets[all][] = reset.css
+stylesheets[all][] = header.css
+stylesheets[all][] = header.css
+stylesheets[all][] = wrap.css
+stylesheets[all][] = titles.css
+stylesheets[all][] = style_bg_slider.css
+stylesheets[all][] = webform.css
+stylesheets[all][] = queryLoader.css
+
+; Information added by drupal.org packaging script on 2010-12-15
+version = "6.20"
+project = "drupal"
+datestamp = "1292447788"
+
+; regions page
+regions[gasoline_content] = gasoline_content
+regions[gasoline_img] = gasoline_img
+regions[featured] = featured
+regions[news] = news
+regions[feedback] = feedback
+regions[events] = events
+regions[music] = music
+regions[release] = release
+regions[stores] = stores
+regions[biography] = biography
+regions[gallery] = gallery
+regions[links_remote] = links remote
+regions[links_sam] = links sam
+regions[links_christian] = links christian
+regions[links_other] = links other
+regions[contact] = contact
+regions[footer] = footer
+

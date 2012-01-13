@@ -1,0 +1,83 @@
+/*===============================================*/
+/*   
+     Name: Gasoline_FB artist page
+     Date: 8/6/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: style.css
+*/   
+/*===============================================*/
+
+#audio_player{
+  z-index: -1000;
+}
+
+#flashContent { 
+  width:100%; 
+  height:100%; 
+}
+
+#wrap{
+  width: 520px;
+}
+
+#featured_artists{
+  padding-bottom:40px;
+}
+
+.artist {
+  float:left;
+  padding: 7px;
+}
+
+#featured_artists{
+  height: 290px;
+  border-bottom: 1px solid #ccc;
+}
+
+#other_artist{
+  margin-top: 36px;
+}
+
+
+/*--SOCIAL ICONS------------------------------*/
+
+.social_icon{
+  margin-top:5px;
+  height: 32px;
+}
+
+.facebook, .myspace, .soundcloud, .website {
+  float: left;
+  width: 24px;
+  height:24px;
+  margin-right:5px;
+}
+
+.facebook {
+  background: url(ico/fb_off.png)
+}
+.facebook:hover {
+  background: url(ico/fb_on.png)
+}
+
+.myspace {
+  background: url(ico/ms_off.png)
+}
+.myspace:hover {
+  background: url(ico/ms_on.png);
+}
+
+.soundcloud {
+  background: url(ico/sc_off.png)
+}
+.soundcloud:hover {
+  background: url(ico/sc_on.png)
+}
+
+.website {
+  background: url(ico/web_off.png)
+}
+.website:hover {
+  background: url(ico/web_on.png)
+}

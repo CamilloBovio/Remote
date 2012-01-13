@@ -1,0 +1,39 @@
+; $Id: two_column_stacked.info,v 1.1 2009/09/15 03:38:45 techsoldaten Exp $
+name = Two Column Stacked
+description = Two column stacked template for the Interface module
+template = two_column_stacked.tpl.php
+directory = interface
+
+; all css files needed for the display will be loaded through an array
+css[] = two_column_stacked.css
+
+; all regions will be defined here, with a key corresponding to an rid in the code
+regions[region_zero] = Region Zero
+regions[region_four] = Region Four
+regions[region_one] = Region One
+regions[region_two] = Region Two
+regions[region_three] = Region Three
+
+; create a default region where all form elements will be placed. if there is not a region defined, 
+; the first element will be used.
+default_region = region_one
+
+; all behaviors can be loaded through this interface
+behaviors[common_groupers][name] = Common Groupers
+behaviors[common_groupers][id] = common_groupers
+behaviors[common_groupers][path] = /behaviors/common_groupers/common_groupers
+behaviors[tabbable][name] = Tabbable
+behaviors[tabbable][id] = tabbable
+behaviors[tabbable][path] = /behaviors/tabbable/tabbable
+behaviors[tabbable][js] = /behaviors/tabbable/tabbable_actions.js
+behaviors[tabbable][css] = /behaviors/tabbable/tabbable.css
+
+; a template for preprocessing can be defined here
+
+
+; Information added by drupal.org packaging script on 2009-09-15
+version = "6.x-1.0"
+core = "6.x"
+project = "interface"
+datestamp = "1252987533"
+

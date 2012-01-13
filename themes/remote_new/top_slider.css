@@ -1,0 +1,19 @@
+/*===============================================*/
+/*   
+     Name: Remoteclick.it
+     Date: 26/4/2011
+     Remote style by: http://www.bcadsgn.com
+     version: 1.0
+     type: top_slider.css
+     
+*/   
+/*===============================================*/
+
+
+/*--TOP SLIDER-----------------------------------*/
+
+.headerimg { 
+  background-position: center top; 
+  background-repeat: no-repeat; 
+  position:absolute; 
+}

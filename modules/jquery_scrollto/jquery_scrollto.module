@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Adds the jQuery scrollto plugin to a page.
+ */
+function jquery_scrollto_plugin_add() {
+	$path = drupal_get_path('module', 'jquery_scrollto') .'/jquery/';
+  drupal_add_js($path . 'jquery.scrollTo-min.js');
+}
+
+/**
+ * Implementation of hook requirements
+ */
+function jquery_scrollto_plugin_requirements() {
+  //TODO fill in hook requirements
+}

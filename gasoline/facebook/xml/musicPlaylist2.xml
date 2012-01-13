@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<playlist>
+	
+	<playlistItem title="Free Form" music="music/adg3.com_freeForm.mp3" albumCover="albumImages/album7.jpg" />
+	<playlistItem title="Busted Chump" music="music/adg3.com_bustedChump.mp3" albumCover="albumImages/album1.jpg" />
+	<playlistItem title="Chucked Knuckles" music="music/adg3.com_chuckedKnuckles.mp3" albumCover="albumImages/album2.jpg" />
+	<playlistItem title="Cloud Less Days" music="music/adg3.com_cloudlessDays.mp3" albumCover="albumImages/album3.jpg" />
+	<playlistItem title="Core Issues" music="music/adg3.com_coreIssues.mp3" albumCover="albumImages/album4.jpg" />
+	<playlistItem title="Cryptic Psyche" music="music/adg3.com_crypticPsyche.mp3" albumCover="albumImages/album5.jpg" />
+	<playlistItem title="Electric Freak" music="music/adg3.com_electroFreak.mp3" albumCover="albumImages/album6.jpg" />
+	
+	
+</playlist>

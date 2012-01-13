@@ -1,0 +1,20 @@
+/* $Id: views_slideshow.css,v 1.1.2.1.2.3 2009/09/26 22:20:50 redndahead Exp $ */
+
+.views_slideshow_thumbnailhover_no_display,
+.views_slideshow_thumbnailhover_hidden,
+.views_slideshow_thumbnailhover_controls,
+.views_slideshow_thumbnailhover_image_count {
+  display: none;
+}
+
+#views_slideshow_singleframe_controls_Home_news_view-block_1 {
+     float: right;
+     margin-top:10px;
+}
+
+
+#views_slideshow_singleframe_prev_Home_news_view-block_1,
+#views_slideshow_singleframe_playpause_Home_news_view-block_1,
+#views_slideshow_singleframe_next_Home_news_view-block_1 {
+  margin-right: 10px;
+}
